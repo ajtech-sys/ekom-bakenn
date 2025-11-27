@@ -1,0 +1,19 @@
+{
+  "media.label": "Media",
+  "media.optional": "(Optional)",
+  "media.helper": "Add media to the product to showcase it in your storefront.",
+  "upload.button": "Upload images",
+  "upload.uploading": "Uploading...",
+  "upload.hint": "Drag and drop images here or click to upload.",
+  "gallery.no_images": "No images yet. Upload images to get started.",
+  "thumbnail.badge": "Thumbnail",
+  "modal.edit": "Edit",
+  "modal.title": "Edit Media",
+  "modal.cancel": "Cancel",
+  "modal.save": "Save",
+  "command.selected": "{{count}} selected",
+  "command.set_thumbnail": "Set as thumbnail",
+  "command.delete": "Delete",
+  "toast.save_success": "Category media saved successfully",
+  "toast.save_error": "Failed to save changes"
+}

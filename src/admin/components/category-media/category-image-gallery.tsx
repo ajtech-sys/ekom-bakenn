@@ -1,0 +1,68 @@
+import { CategoryImage, UploadedFile } from "../../types"
+import { CategoryImageItem } from "./category-image-item"
+import { Text } from "../ui/text"
+import { useTranslation } from 'react-i18next'
+
+type CategoryImageGalleryProps = {
+  existingImages: CategoryImage[]
+  uploadedFiles: UploadedFile[]
+  currentThumbnailId: string | null
+  selectedImageIds: Set<string>
+  onToggleSelect: (id: string, isUploaded?: boolean) => void
+  imagesToDelete: Set<string>
+}
+
+export const CategoryImageGallery = ({ existingImages, uploadedFiles, currentThumbnailId, selectedImageIds, onToggleSelect, imagesToDelete }: CategoryImageGalleryProps) => {
+  const { t } = useTranslation('common')
+  const visibleExistingImages = existingImages.filter((image) => image.id && !imagesToDelete.has(image.id))
+  const hasNoImages = visibleExistingImages.length === 0 && uploadedFiles.length === 0
+
+  return (
+    <div className="bg-ui-bg-subtle size-full overflow-auto">
+      <div className="grid h-fit auto-rows-auto grid-cols-4 gap-6 p-6">
+        {visibleExistingImages.map((image) => {
+          if (!image.id) {
+            return null
+          }
+          const imageId = image.id
+          const isThumbnail = currentThumbnailId === imageId
+          const isSelected = selectedImageIds.has(imageId)
+          return (
+            <CategoryImageItem
+              key={imageId}
+              id={imageId}
+              url={image.url}
+              alt={`Category ${image.type}`}
+              isThumbnail={isThumbnail}
+              isSelected={isSelected}
+              onToggleSelect={() => onToggleSelect(imageId)}
+            />
+          )
+        })}
+
+        {uploadedFiles.map((file) => {
+          const uploadedId = `uploaded:${file.id}`
+          const isThumbnail = currentThumbnailId === uploadedId
+          const isSelected = selectedImageIds.has(uploadedId)
+          return (
+            <CategoryImageItem
+              key={file.id}
+              id={file.id}
+              url={file.url}
+              alt="Uploaded"
+              isThumbnail={isThumbnail}
+              isSelected={isSelected}
+              onToggleSelect={() => onToggleSelect(file.id, true)}
+            />
+          )
+        })}
+
+        {hasNoImages && (
+          <div className="col-span-4 flex items-center justify-center p-8">
+            <Text className="text-ui-fg-subtle text-center">{t('gallery.no_images')}</Text> 
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

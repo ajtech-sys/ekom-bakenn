@@ -1,0 +1,19 @@
+{
+  "media.label": "Medya",
+  "media.optional": "(Opsyonèl)",
+  "media.helper": "Ajoute medya sou pwodwi a pou montre li nan vitrin ou.",
+  "upload.button": "Telechaje imaj",
+  "upload.uploading": "Ap telechaje...",
+  "upload.hint": "Rale lage imaj isit la oswa klike pou telechaje.",
+  "gallery.no_images": "Pa gen imaj ankò. Telechaje imaj pou kòmanse.",
+  "thumbnail.badge": "Vedèt",
+  "modal.edit": "Modifye",
+  "modal.title": "Modifye Medya",
+  "modal.cancel": "Anile",
+  "modal.save": "Sere",
+  "command.selected": "{{count}} chwazi",
+  "command.set_thumbnail": "Make kòm vedèt",
+  "command.delete": "Efase",
+  "toast.save_success": "Medya kategori an sove avèk siksè",
+  "toast.save_error": "Echwe pou sove chanjman yo"
+}
