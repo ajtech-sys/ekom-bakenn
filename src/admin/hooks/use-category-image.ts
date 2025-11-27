@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { sdk } from '../lib/sdk'
-import { CategoryImage } from '../types'
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { sdk } from "../lib/sdk"
+import { CategoryImage } from "../types"
 
 type UseCategoryImageMutationsProps = {
   categoryId: string
@@ -18,16 +18,16 @@ export const useCategoryImageMutations = ({ categoryId, onCreateSuccess, onUpdat
       return response
     },
     onError: (error) => {
-      console.error('Failed to upload files:', error)
+      console.error("Failed to upload files:", error)
     },
   })
 
   const createImagesMutation = useMutation({
-    mutationFn: async (images: Omit<CategoryImage, 'id' | 'category_id'>[]) => {
+    mutationFn: async (images: Omit<CategoryImage, "id" | "category_id">[]) => {
       const response = await sdk.client.fetch(`/admin/categories/${categoryId}/images`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: {
           images,
@@ -36,17 +36,17 @@ export const useCategoryImageMutations = ({ categoryId, onCreateSuccess, onUpdat
       return response
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['category-images', categoryId] })
+      queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
       onCreateSuccess?.()
     },
   })
 
   const updateImagesMutation = useMutation({
-    mutationFn: async (updates: { id: string; type: 'thumbnail' | 'image' }[]) => {
+    mutationFn: async (updates: { id: string; type: "thumbnail" | "image" }[]) => {
       const response = await sdk.client.fetch(`/admin/categories/${categoryId}/images/batch`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: {
           updates,
@@ -55,7 +55,7 @@ export const useCategoryImageMutations = ({ categoryId, onCreateSuccess, onUpdat
       return response
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['category-images', categoryId] })
+      queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
       onUpdateSuccess?.()
     },
   })
@@ -63,9 +63,9 @@ export const useCategoryImageMutations = ({ categoryId, onCreateSuccess, onUpdat
   const deleteImagesMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const response = await sdk.client.fetch(`/admin/categories/${categoryId}/images/batch`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: {
           ids,
@@ -74,7 +74,7 @@ export const useCategoryImageMutations = ({ categoryId, onCreateSuccess, onUpdat
       return response
     },
     onSuccess: (_data, deletedIds) => {
-      queryClient.invalidateQueries({ queryKey: ['category-images', categoryId] })
+      queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
       onDeleteSuccess?.(deletedIds as string[])
     },
   })

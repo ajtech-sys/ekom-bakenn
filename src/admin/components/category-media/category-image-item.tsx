@@ -1,8 +1,6 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { ThumbnailBadge } from '../ui/thumbnail-badge'
-import { Checkbox } from '../ui/checkbox'
-import { clx } from '../../utils/clx'
+import { ThumbnailBadge } from "../ui/thumbnail-badge"
+import { Checkbox } from "../ui/checkbox"
+import { clx } from "../../utils/clx"
 
 type CategoryImageItemProps = {
   id: string
@@ -14,7 +12,6 @@ type CategoryImageItemProps = {
 }
 
 export const CategoryImageItem = ({ id, url, alt, isThumbnail, isSelected, onToggleSelect }: CategoryImageItemProps) => {
-  const { t } = useTranslation('common')
   return (
     <div
       key={id}
@@ -22,13 +19,13 @@ export const CategoryImageItem = ({ id, url, alt, isThumbnail, isSelected, onTog
     >
       {isThumbnail && (
         <div className="absolute left-2 top-2">
-          <ThumbnailBadge label={t('thumbnail.badge')} />
+          <ThumbnailBadge />
         </div>
       )}
       <div
         className={clx(
-          'transition-opacity absolute right-2 top-2 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 group-focus:opacity-100',
-          isSelected && 'opacity-100'
+          "transition-opacity absolute right-2 top-2 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 group-focus:opacity-100",
+          isSelected && "opacity-100"
         )}
       >
         <Checkbox checked={isSelected} onCheckedChange={onToggleSelect} />

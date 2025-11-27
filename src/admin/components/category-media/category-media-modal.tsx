@@ -1,15 +1,14 @@
-import { useState, useRef } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { Button } from '../ui/button'
-import { FocusModal } from '../ui/focus-modal'
-import { Heading } from '../ui/heading'
-import { toast } from '../../utils/toast'
-import { CommandBar } from '../ui/command-bar'
-import { CategoryImage, UploadedFile } from '../../types'
-import { CategoryImageGallery } from './category-image-gallery'
-import { CategoryImageUpload } from './category-image-upload'
-import { useCategoryImageMutations } from '../../hooks/use-category-image'
-import { useTranslation } from 'react-i18next'
+import { useState, useRef } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { Button } from "../ui/button"
+import { FocusModal } from "../ui/focus-modal"
+import { Heading } from "../ui/heading"
+import { CommandBar } from "../ui/command-bar"
+import { toast } from "../../utils/toast"
+import { CategoryImage, UploadedFile } from "../../types"
+import { CategoryImageGallery } from "./category-image-gallery"
+import { CategoryImageUpload } from "./category-image-upload"
+import { useCategoryImageMutations } from "../../hooks/use-category-image"
 
 type CategoryMediaModalProps = {
   categoryId: string
@@ -17,7 +16,6 @@ type CategoryMediaModalProps = {
 }
 
 export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMediaModalProps) => {
-  const { t } = useTranslation('common')
   const [open, setOpen] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const [currentThumbnailId, setCurrentThumbnailId] = useState<string | null>(null)
@@ -43,7 +41,7 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
     },
   })
 
-  const isSaving = (createImagesMutation as any).isPending || (updateImagesMutation as any).isPending || (deleteImagesMutation as any).isPending
+  const isSaving = createImagesMutation.isPending || updateImagesMutation.isPending || deleteImagesMutation.isPending
 
   const resetModalState = () => {
     setUploadedFiles([])
@@ -53,7 +51,7 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
   }
 
   const initializeThumbnail = () => {
-    const thumbnailImage = existingImages.find((img) => img.type === 'thumbnail')
+    const thumbnailImage = existingImages.find((img) => img.type === "thumbnail")
     if (thumbnailImage?.id) {
       setCurrentThumbnailId(thumbnailImage.id)
       setSelectedImageIds(new Set([thumbnailImage.id]))
@@ -70,47 +68,64 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
   }
 
   const handleUploadFile = (files: FileList | null) => {
-    if (!files || files.length === 0) return
-    const filesArray = Array.from(files)
-    ;(uploadFilesMutation as any).onSuccess = (data: any) => {
-      setUploadedFiles((prev) => [...prev, ...(data.files || [])])
+    if (!files || files.length === 0) {
+      return
     }
-    uploadFilesMutation.mutate(filesArray)
-    if (fileInputRef.current) fileInputRef.current.value = ''
+    const filesArray = Array.from(files)
+    uploadFilesMutation.mutate(filesArray, {
+      onSuccess: (data: any) => {
+        setUploadedFiles((prev) => [...prev, ...(data.files || [])])
+      },
+    })
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
   }
 
   const handleImageSelection = (id: string, isUploaded: boolean = false) => {
     const itemId = isUploaded ? `uploaded:${id}` : id
     const newSelected = new Set(selectedImageIds)
-    if (newSelected.has(itemId)) newSelected.delete(itemId)
-    else newSelected.add(itemId)
+    if (newSelected.has(itemId)) {
+      newSelected.delete(itemId)
+    } else {
+      newSelected.add(itemId)
+    }
     setSelectedImageIds(newSelected)
   }
 
   const handleSetAsThumbnail = () => {
-    if (selectedImageIds.size !== 1) return
+    if (selectedImageIds.size !== 1) {
+      return
+    }
     const selectedId = Array.from(selectedImageIds)[0]
     setCurrentThumbnailId(selectedId)
-    if (selectedId.startsWith('uploaded:')) {
-      const uploadedFileId = selectedId.replace('uploaded:', '')
-      setUploadedFiles((prev) => prev.map((file) => (file.id === uploadedFileId ? { ...file, type: 'thumbnail' } : file)))
+    if (selectedId.startsWith("uploaded:")) {
+      const uploadedFileId = selectedId.replace("uploaded:", "")
+      setUploadedFiles((prev) => prev.map((file) => (file.id === uploadedFileId ? { ...file, type: "thumbnail" } : file)))
     }
     setSelectedImageIds(new Set())
   }
 
   const handleDelete = () => {
-    if (selectedImageIds.size === 0) return
+    if (selectedImageIds.size === 0) {
+      return
+    }
     const uploadedFileIds: string[] = []
     const savedImageIds: string[] = []
     selectedImageIds.forEach((id) => {
-      if (id.startsWith('uploaded:')) uploadedFileIds.push(id.replace('uploaded:', ''))
-      else savedImageIds.push(id)
+      if (id.startsWith("uploaded:")) {
+        uploadedFileIds.push(id.replace("uploaded:", ""))
+      } else {
+        savedImageIds.push(id)
+      }
     })
     if (uploadedFileIds.length > 0) {
       setUploadedFiles((prev) => prev.filter((file) => !uploadedFileIds.includes(file.id)))
-      if (currentThumbnailId?.startsWith('uploaded:')) {
-        const thumbnailFileId = currentThumbnailId.replace('uploaded:', '')
-        if (uploadedFileIds.includes(thumbnailFileId)) setCurrentThumbnailId(null)
+      if (currentThumbnailId?.startsWith("uploaded:")) {
+        const thumbnailFileId = currentThumbnailId.replace("uploaded:", "")
+        if (uploadedFileIds.includes(thumbnailFileId)) {
+          setCurrentThumbnailId(null)
+        }
       }
     }
     if (savedImageIds.length > 0) {
@@ -119,7 +134,9 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
         savedImageIds.forEach((id) => newSet.add(id))
         return newSet
       })
-      if (currentThumbnailId && savedImageIds.includes(currentThumbnailId)) setCurrentThumbnailId(null)
+      if (currentThumbnailId && savedImageIds.includes(currentThumbnailId)) {
+        setCurrentThumbnailId(null)
+      }
     }
     setSelectedImageIds(new Set())
   }
@@ -127,8 +144,11 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
   const handleSave = async () => {
     const hasNewImages = uploadedFiles.length > 0
     const hasImagesToDelete = imagesToDelete.size > 0
-    const initialThumbnail = existingImages.find((img) => img.type === 'thumbnail')
-    const thumbnailChanged = !!currentThumbnailId && !currentThumbnailId.startsWith('uploaded:') && currentThumbnailId !== initialThumbnail?.id
+    const initialThumbnail = existingImages.find((img) => img.type === "thumbnail")
+    const thumbnailChanged =
+      !!currentThumbnailId &&
+      !currentThumbnailId.startsWith("uploaded:") &&
+      currentThumbnailId !== initialThumbnail?.id
     if (!hasNewImages && !hasImagesToDelete && !thumbnailChanged) {
       setOpen(false)
       return
@@ -139,35 +159,37 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
         const imagesToCreate = uploadedFiles.map((file) => ({
           url: file.url,
           file_id: file.id,
-          type: file.type || (currentThumbnailId === `uploaded:${file.id}` ? 'thumbnail' : 'image'),
+          type: file.type || (currentThumbnailId === `uploaded:${file.id}` ? "thumbnail" : "image"),
         }))
         operations.push(createImagesMutation.mutateAsync(imagesToCreate))
       }
       if (thumbnailChanged) {
-        operations.push(updateImagesMutation.mutateAsync([{ id: currentThumbnailId as string, type: 'thumbnail' }]))
+        operations.push(updateImagesMutation.mutateAsync([{ id: currentThumbnailId as string, type: "thumbnail" }]))
       }
       if (hasImagesToDelete) {
         const idsToDelete = Array.from(imagesToDelete)
         operations.push(deleteImagesMutation.mutateAsync(idsToDelete))
       }
       await Promise.all(operations)
-      queryClient.invalidateQueries({ queryKey: ['category-images', categoryId] })
+      queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
       setOpen(false)
       resetModalState()
-      toast.success(t('toast.save_success'))
+      toast.success("Category media saved successfully")
     } catch (error) {
-      toast.error(t('toast.save_error'))
+      toast.error("Failed to save changes")
     }
   }
 
   return (
     <FocusModal open={open} onOpenChange={handleOpenChange}>
-      <FocusModal.Trigger>
-        <Button size="small" variant="secondary">{t('modal.edit')}</Button>
+      <FocusModal.Trigger asChild>
+        <Button size="small" variant="secondary">
+          Edit
+        </Button>
       </FocusModal.Trigger>
       <FocusModal.Content>
         <FocusModal.Header>
-          <Heading>{t('modal.title')}</Heading>
+          <Heading>Edit Media</Heading>
         </FocusModal.Header>
         <FocusModal.Body className="flex h-full overflow-hidden">
           <div className="flex w-full h-full flex-col-reverse lg:grid lg:grid-cols-[1fr_560px]">
@@ -179,22 +201,26 @@ export const CategoryMediaModal = ({ categoryId, existingImages }: CategoryMedia
               onToggleSelect={handleImageSelection}
               imagesToDelete={imagesToDelete}
             />
-            <CategoryImageUpload fileInputRef={fileInputRef} isUploading={(uploadFilesMutation as any).isPending} onFileSelect={handleUploadFile} />
+            <CategoryImageUpload fileInputRef={fileInputRef} isUploading={uploadFilesMutation.isPending} onFileSelect={handleUploadFile} />
           </div>
           <CommandBar open={selectedImageIds.size > 0}>
             <CommandBar.Bar>
-              <CommandBar.Value>{t('command.selected', { count: selectedImageIds.size })}</CommandBar.Value>
+              <CommandBar.Value>{selectedImageIds.size} selected</CommandBar.Value>
               <CommandBar.Seperator />
-              <CommandBar.Command action={handleSetAsThumbnail} label={t('command.set_thumbnail')} disabled={selectedImageIds.size !== 1} />
+              <CommandBar.Command action={handleSetAsThumbnail} label="Set as thumbnail" shortcut="t" disabled={selectedImageIds.size !== 1} />
               <CommandBar.Seperator />
-              <CommandBar.Command action={handleDelete} label={t('command.delete')} />
+              <CommandBar.Command action={handleDelete} label="Delete" shortcut="d" />
             </CommandBar.Bar>
           </CommandBar>
         </FocusModal.Body>
         <FocusModal.Footer>
           <div className="flex items-center justify-end gap-x-2">
-            <Button size="small" variant="secondary" onClick={() => setOpen(false)}>{t('modal.cancel')}</Button>
-            <Button size="small" onClick={handleSave} isLoading={isSaving}>{t('modal.save')}</Button>
+            <Button size="small" variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button size="small" onClick={handleSave} isLoading={isSaving}>
+              Save
+            </Button>
           </div>
         </FocusModal.Footer>
       </FocusModal.Content>

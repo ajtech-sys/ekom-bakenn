@@ -1,7 +1,6 @@
+import { Text } from "../ui/text"
 import { CategoryImage, UploadedFile } from "../../types"
 import { CategoryImageItem } from "./category-image-item"
-import { Text } from "../ui/text"
-import { useTranslation } from 'react-i18next'
 
 type CategoryImageGalleryProps = {
   existingImages: CategoryImage[]
@@ -13,12 +12,11 @@ type CategoryImageGalleryProps = {
 }
 
 export const CategoryImageGallery = ({ existingImages, uploadedFiles, currentThumbnailId, selectedImageIds, onToggleSelect, imagesToDelete }: CategoryImageGalleryProps) => {
-  const { t } = useTranslation('common')
   const visibleExistingImages = existingImages.filter((image) => image.id && !imagesToDelete.has(image.id))
   const hasNoImages = visibleExistingImages.length === 0 && uploadedFiles.length === 0
 
   return (
-    <div className="bg-ui-bg-subtle size-full overflow-auto">
+    <div className="bg-base-100 size-full overflow-auto">
       <div className="grid h-fit auto-rows-auto grid-cols-4 gap-6 p-6">
         {visibleExistingImages.map((image) => {
           if (!image.id) {
@@ -59,7 +57,7 @@ export const CategoryImageGallery = ({ existingImages, uploadedFiles, currentThu
 
         {hasNoImages && (
           <div className="col-span-4 flex items-center justify-center p-8">
-            <Text className="text-ui-fg-subtle text-center">{t('gallery.no_images')}</Text> 
+            <Text className="text-base-content/60 text-center">No images yet. Upload images to get started.</Text>
           </div>
         )}
       </div>

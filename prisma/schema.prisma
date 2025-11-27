@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  products  Product[]
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  brandId   String? 
+  brand     Brand?   @relation(fields: [brandId], references: [id])
+  reviews   Review[]
+}
+
+model Category {
+  id        String          @id @default(uuid())
+  name      String
+  slug      String          @unique
+  createdAt DateTime        @default(now())
+  images    CategoryImage[]
+}
+
+enum ImageType {
+  image
+  thumbnail
+}
+
+model CategoryImage {
+  id         String    @id @default(uuid())
+  url        String
+  type       ImageType @default(image)
+  fileId     String?
+  createdAt  DateTime  @default(now())
+  categoryId String
+  category   Category  @relation(fields: [categoryId], references: [id])
+}
+
+enum ReviewStatus {
+  pending
+  approved
+  rejected
+}
+
+model Review {
+  id         String       @id @default(uuid())
+  title      String?
+  content    String
+  rating     Int
+  status     ReviewStatus @default(pending)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  productId  String
+  product    Product      @relation(fields: [productId], references: [id])
+  customerId String?
+}
