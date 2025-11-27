@@ -298,6 +298,13 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 node_modules/
+dist/
+coverage/
+*.log
+.env*
+.yalc/
+yalc.lock
+.DS_Store
 
 # Typescript v1 declaration files
 typings/
